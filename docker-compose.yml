@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # MSSQL Server Database
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: innovacion-crm-mssql
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourPassword123"
+      MSSQL_PID: "Express"
+    volumes:
+      - mssql-data:/var/opt/mssql
+      - ./apps/database:/scripts
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourPassword123", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - innovacion-net
+
+  # NestJS Backend
+  backend:
+    build:
+      context: ./apps/backend
+      dockerfile: Dockerfile
+    container_name: innovacion-crm-backend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DATABASE_HOST: mssql
+      DATABASE_PORT: 1433
+      DATABASE_USER: sa
+      DATABASE_PASSWORD: YourPassword123
+      DATABASE_NAME: InnovacionCRM
+    depends_on:
+      mssql:
+        condition: service_healthy
+    volumes:
+      - ./apps/backend/src:/app/src
+      - ./apps/backend/node_modules:/app/node_modules
+    networks:
+      - innovacion-net
+    command: npm run start:dev
+
+  # Angular Frontend
+  frontend:
+    build:
+      context: ./apps/frontend
+      dockerfile: Dockerfile
+    container_name: innovacion-crm-frontend
+    ports:
+      - "4200:4200"
+    environment:
+      API_URL: http://backend:3000/api
+    depends_on:
+      - backend
+    volumes:
+      - ./apps/frontend/src:/app/src
+      - ./apps/frontend/node_modules:/app/node_modules
+    networks:
+      - innovacion-net
+    command: ng serve --host 0.0.0.0 --poll=2000
+
+volumes:
+  mssql-data:
+
+networks:
+  innovacion-net:
+    driver: bridge

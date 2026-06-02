@@ -1,0 +1,280 @@
+# Innovacion CRM - Monorepo
+
+Sistema CRM para el seguimiento comercial de Innovacion, S.A.
+
+## Estructura del Proyecto
+
+```
+proyecto-final/
+├── apps/
+│   ├── backend/        # NestJS API
+│   ├── frontend/       # Angular Web App
+│   └── database/       # MSSQL Scripts
+├── docker-compose.yml  # Configuración Docker
+└── package.json        # Workspace root
+```
+
+## Requisitos
+
+- Docker Desktop instalado
+- Git
+- Node.js 18+ (opcional, para desarrollo local)
+
+## Instalación y Ejecución
+
+### 1. Clonar el repositorio
+
+```bash
+git clone <repositorio>
+cd proyecto-final
+```
+
+### 2. Levantar los servicios con Docker
+
+```bash
+# Iniciar todos los servicios en background
+npm run dev
+
+# Ver logs en tiempo real
+npm run dev:logs
+
+# Reconstruir imágenes
+npm run dev:rebuild
+
+# Detener servicios
+npm run dev:down
+```
+
+### 3. Acceder a las aplicaciones
+
+- **Frontend (Angular)**: http://localhost:4200
+- **Backend (API)**: http://localhost:3000/api
+- **Database (MSSQL)**: localhost:1433
+
+### 4. Inicializar base de datos
+
+```bash
+# Después de que MSSQL esté listo
+npm run db:init
+```
+
+## Credenciales por Defecto
+
+| Servicio | Usuario | Contraseña |
+|----------|---------|------------|
+| MSSQL    | sa      | YourPassword123 |
+
+⚠️ **Cambiar en producción**
+
+## Desarrollo
+
+### Backend (NestJS)
+
+```bash
+cd apps/backend
+
+# Instalar dependencias
+npm install
+
+# Desarrollo con hot-reload
+npm run start:dev
+
+# Build
+npm run build
+
+# Tests
+npm run test
+```
+
+### Frontend (Angular)
+
+```bash
+cd apps/frontend
+
+# Instalar dependencias
+npm install
+
+# Desarrollo con hot-reload
+npm start
+
+# Build
+npm run build
+
+# Tests
+npm test
+```
+
+## Estructura de Carpetas
+
+### Backend
+
+```
+apps/backend/
+├── src/
+│   ├── main.ts                 # Punto de entrada
+│   ├── app.module.ts           # Módulo raíz
+│   ├── entities/               # Entidades TypeORM
+│   ├── modules/                # Módulos (clientes, oportunidades, etc.)
+│   │   ├── clientes/
+│   │   ├── contactos/
+│   │   ├── oportunidades/
+│   │   └── actividades/
+│   └── migrations/             # Migraciones DB
+├── Dockerfile
+└── package.json
+```
+
+### Frontend
+
+```
+apps/frontend/
+├── src/
+│   ├── main.ts                 # Bootstrap
+│   ├── app/
+│   │   ├── components/         # Componentes
+│   │   ├── services/           # Servicios HTTP
+│   │   ├── models/             # Interfaces
+│   │   └── app.component.ts
+│   └── assets/
+├── Dockerfile
+├── angular.json
+└── package.json
+```
+
+### Database
+
+```
+apps/database/
+├── final.sql                   # Schema y datos iniciales
+└── migrations/                 # Scripts adicionales
+```
+
+## Módulos del Sistema
+
+### 1. Clientes
+- Crear, actualizar, consultar clientes
+- Tipos: Potencial, Final
+- Campos: código, nombre, dirección, teléfono, correo
+
+### 2. Contactos
+- Gestionar contactos por cliente
+- Información: nombre, puesto, teléfono, correo
+
+### 3. Oportunidades
+- Crear oportunidades de venta
+- Etapas: 20%, 30%, 50%, 80%, 95%, 100%
+- Cálculo automático de montos ponderados
+- Validaciones de cierre
+
+### 4. Actividades
+- Registrar actividades (llamadas, reuniones, tareas)
+- Tipos: Llamada, Reunión, Tarea, Nota, etc.
+- Prioridades: Normal, Alto, Bajo
+- Estados personalizados según tipo
+
+### 5. Reportes
+- Oportunidades por fecha
+- Oportunidades por gestor
+- Oportunidades ganadas/perdidas
+
+## Variables de Entorno
+
+### Backend (.env)
+
+```
+NODE_ENV=development
+DATABASE_HOST=mssql
+DATABASE_PORT=1433
+DATABASE_USER=sa
+DATABASE_PASSWORD=YourPassword123
+DATABASE_NAME=InnovacionCRM
+PORT=3000
+```
+
+### Frontend (environment.ts)
+
+```
+API_URL=http://localhost:3000/api
+```
+
+## Migraciones de Base de Datos
+
+Las migraciones se ejecutan automáticamente en el startup del backend.
+
+Para crear nuevas migraciones:
+
+```bash
+cd apps/backend
+npm run typeorm migration:create -- src/migrations/CreateNuevaTabla
+```
+
+## Testing
+
+```bash
+# Backend
+cd apps/backend && npm test
+
+# Frontend
+cd apps/frontend && npm test
+```
+
+## Troubleshooting
+
+### Puerto ya en uso
+
+Si el puerto está ocupado:
+
+```bash
+# Cambiar puertos en docker-compose.yml
+# MSSQL: cambiar 1433:1433
+# Backend: cambiar 3000:3000
+# Frontend: cambiar 4200:4200
+```
+
+### MSSQL no inicia
+
+```bash
+# Verificar logs
+docker logs innovacion-crm-mssql
+
+# Reiniciar servicio
+docker-compose restart mssql
+```
+
+### Frontend no conecta a API
+
+Verificar variable `API_URL` y CORS en Backend.
+
+```bash
+# Probar endpoint desde navegador
+curl http://localhost:3000/api/health
+```
+
+## Producción
+
+Para deployment:
+
+```bash
+# Build all
+docker-compose -f docker-compose.prod.yml build
+
+# Deploy
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+Cambiar credenciales en `.env.production`.
+
+## Contribuciones
+
+1. Crear rama feature: `git checkout -b feature/nombre`
+2. Commit cambios: `git commit -m "Descripción"`
+3. Push: `git push origin feature/nombre`
+4. Pull Request
+
+## Licencia
+
+MIT
+
+## Contacto
+
+Frederick Montiel - femontielt@gmail.com

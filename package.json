@@ -1,0 +1,19 @@
+{
+  "name": "innovacion-crm-monorepo",
+  "version": "1.0.0",
+  "description": "CRM System for Innovacion S.A.",
+  "private": true,
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "scripts": {
+    "dev": "docker-compose up -d",
+    "dev:logs": "docker-compose logs -f",
+    "dev:down": "docker-compose down",
+    "dev:build": "docker-compose build",
+    "dev:rebuild": "docker-compose down && docker-compose build && docker-compose up -d",
+    "db:init": "docker-compose exec mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourPassword123 -i /scripts/final.sql"
+  },
+  "devDependencies": {}
+}

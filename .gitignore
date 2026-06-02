@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+*.npm
+package-lock.json
+yarn.lock
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environments
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+*.js.map
+*.d.ts
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# MSSQL grupo (no incluir en repo)
+mssql/grupo/
+
+# Temporal
+tmp/
+temp/
+.cache
