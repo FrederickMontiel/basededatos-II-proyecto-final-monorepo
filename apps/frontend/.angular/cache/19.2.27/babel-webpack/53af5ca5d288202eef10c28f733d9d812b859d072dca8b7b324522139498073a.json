@@ -1,0 +1,1 @@
+{"ast":null,"code":"const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';\nconst apiUrl = isLocalhost ? 'http://localhost:3000/api' : 'http://backend:3000/api';\nexport const environment = {\n  production: false,\n  apiUrl: apiUrl\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}

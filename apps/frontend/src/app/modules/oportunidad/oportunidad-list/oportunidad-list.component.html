@@ -1,0 +1,37 @@
+<div class="container">
+  <div class="header">
+    <h2>Oportunidades</h2>
+    <button class="btn btn-primary" (click)="crear()">+ Nueva Oportunidad</button>
+  </div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="loading" class="loading">Cargando oportunidades...</div>
+  <div *ngIf="!loading && oportunidades.length > 0" class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Nombre</th>
+          <th>Cliente</th>
+          <th>Monto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let oportunidad of oportunidades">
+          <td>{{ oportunidad.numero_oportunidad }}</td>
+          <td>{{ oportunidad.nombre_oportunidad }}</td>
+          <td>{{ oportunidad.id_cliente }}</td>
+          <td>{{ oportunidad.monto_potencial | currency }}</td>
+          <td>
+            <button class="btn btn-sm btn-info" (click)="ver(oportunidad.id_oportunidad!)">Ver</button>
+            <button class="btn btn-sm btn-warning" (click)="editar(oportunidad.id_oportunidad!)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="eliminar(oportunidad.id_oportunidad!)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="!loading && oportunidades.length === 0" class="empty-state">
+    <p>No hay oportunidades. <a (click)="crear()">Crear una nueva</a></p>
+  </div>
+</div>

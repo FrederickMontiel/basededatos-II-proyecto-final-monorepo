@@ -1,0 +1,26 @@
+<div class="dashboard">
+  <header class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-title">Innovacion CRM</h1>
+      <div class="navbar-user">
+        <span class="user-name" *ngIf="usuario">{{ usuario.nombres }} {{ usuario.apellidos }}</span>
+        <button class="btn btn-logout" (click)="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="welcome-section">
+      <h2>Bienvenido, {{ usuario?.nombres }}</h2>
+      <p>Selecciona un módulo para comenzar</p>
+    </div>
+
+    <div class="modules-grid">
+      <a *ngFor="let module of modules" [routerLink]="module.path" class="module-card">
+        <div class="module-icon">{{ module.icon }}</div>
+        <h3>{{ module.name }}</h3>
+        <p>{{ module.description }}</p>
+      </a>
+    </div>
+  </main>
+</div>

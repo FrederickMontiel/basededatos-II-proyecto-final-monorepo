@@ -10,6 +10,20 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ActividadController {
   constructor(private actividadService: ActividadService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Listar todas las actividades' })
+  @ApiResponse({ status: 200, description: 'Lista de actividades' })
+  async listar() {
+    return this.actividadService.listar();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener actividad por ID' })
+  @ApiResponse({ status: 200, description: 'Actividad encontrada' })
+  async obtenerPorId(@Param('id') id: number) {
+    return this.actividadService.obtenerPorId(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Registrar nueva actividad' })
   @ApiResponse({ status: 201, description: 'Actividad registrada exitosamente' })

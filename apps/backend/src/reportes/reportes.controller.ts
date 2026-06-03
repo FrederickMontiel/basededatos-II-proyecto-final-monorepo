@@ -10,6 +10,20 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ReportesController {
   constructor(private reportesService: ReportesService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Listar todos los reportes' })
+  @ApiResponse({ status: 200, description: 'Lista de reportes' })
+  async listar() {
+    return this.reportesService.listar();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener reporte por ID' })
+  @ApiResponse({ status: 200, description: 'Reporte encontrado' })
+  async obtenerPorId(@Param('id') id: number) {
+    return this.reportesService.obtenerPorId(id);
+  }
+
   @Get('oportunidades/por-fecha')
   @ApiOperation({ summary: 'Reporte oportunidades por rango de fechas' })
   @ApiResponse({ status: 200, description: 'Datos de oportunidades por fecha' })

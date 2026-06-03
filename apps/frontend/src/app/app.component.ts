@@ -1,33 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'Innovacion CRM';
-  apiStatus = 'Conectando...';
-
-  constructor(private http: HttpClient) {}
-
-  ngOnInit() {
-    this.checkApiHealth();
-  }
-
-  checkApiHealth() {
-    this.http.get<any>('http://backend:3000/api/health')
-      .subscribe({
-        next: (response) => {
-          this.apiStatus = `✓ API Conectada (${response.timestamp})`;
-        },
-        error: () => {
-          this.apiStatus = '✗ Error al conectar API';
-        }
-      });
-  }
 }

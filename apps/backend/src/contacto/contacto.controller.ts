@@ -10,6 +10,20 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ContactoController {
   constructor(private contactoService: ContactoService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Listar todos los contactos' })
+  @ApiResponse({ status: 200, description: 'Lista de contactos' })
+  async listar() {
+    return this.contactoService.listar();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener contacto por ID' })
+  @ApiResponse({ status: 200, description: 'Contacto encontrado' })
+  async obtenerPorId(@Param('id') id: number) {
+    return this.contactoService.obtenerPorId(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Crear nuevo contacto' })
   @ApiResponse({ status: 201, description: 'Contacto creado exitosamente' })

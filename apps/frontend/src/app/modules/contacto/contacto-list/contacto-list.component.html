@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="header">
+    <h2>Contactos</h2>
+    <button class="btn btn-primary" (click)="crear()">+ Nuevo Contacto</button>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="loading" class="loading">Cargando contactos...</div>
+
+  <div *ngIf="!loading && contactos.length > 0" class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Puesto</th>
+          <th>Teléfono</th>
+          <th>Correo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contacto of contactos">
+          <td>{{ contacto.nombre_contacto }}</td>
+          <td>{{ contacto.puesto_contacto }}</td>
+          <td>{{ contacto.telefono }}</td>
+          <td>{{ contacto.correo_electronico }}</td>
+          <td>
+            <button class="btn btn-sm btn-info" (click)="ver(contacto.id_contacto!)">Ver</button>
+            <button class="btn btn-sm btn-warning" (click)="editar(contacto.id_contacto!)">Editar</button>
+            <button class="btn btn-sm btn-danger" (click)="eliminar(contacto.id_contacto!)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && contactos.length === 0" class="empty-state">
+    <p>No hay contactos. <a (click)="crear()">Crear uno nuevo</a></p>
+  </div>
+</div>

@@ -1202,7 +1202,8 @@ GO
 
 INSERT INTO dbo.tipo_oportunidad (nombre_tipo, descripcion) VALUES
 ('Venta', 'Oportunidad relacionada con una venta'),
-('Compra', 'Oportunidad relacionada con una compra');
+('Consultoría', 'Oportunidad relacionada con consultoría'),
+('Soporte', 'Oportunidad relacionada con soporte y mantenimiento');
 GO
 
 INSERT INTO dbo.estado_oportunidad (nombre_estado, descripcion) VALUES
@@ -1251,6 +1252,81 @@ INSERT INTO dbo.finalizacion_actividad (nombre_finalizacion, descripcion) VALUES
 GO
 
 -- =========================================================
+-- SECCION 12: DATOS TRANSACCIONALES
+-- =========================================================
+
+INSERT INTO dbo.usuario_comercial (nombres, apellidos, correo, password_hash, id_rol_usuario, estado) VALUES
+('Carlos', 'García', 'gerente@innovacion.com', '$2b$10$L6Xv0GEOsKGFPs014mx7QeKmCoOXco/xy6K5fcZ4jhZf3mAsAi8KG', 3, 1),
+('Juan', 'Pérez', 'gestor1@innovacion.com', '$2b$10$L6Xv0GEOsKGFPs014mx7QeKmCoOXco/xy6K5fcZ4jhZf3mAsAi8KG', 1, 1),
+('María', 'López', 'gestor2@innovacion.com', '$2b$10$L6Xv0GEOsKGFPs014mx7QeKmCoOXco/xy6K5fcZ4jhZf3mAsAi8KG', 1, 1),
+('Ana', 'Martínez', 'asistente@innovacion.com', '$2b$10$L6Xv0GEOsKGFPs014mx7QeKmCoOXco/xy6K5fcZ4jhZf3mAsAi8KG', 2, 1);
+GO
+
+INSERT INTO dbo.cliente (id_tipo_cliente, codigo_cliente, nombre_comercial, correo_electronico, telefono, direccion_empresa, estado) VALUES
+(1, 'CLI001', 'Empresa Tech Solutions', 'contacto@etech.com', '555-0101', 'Calle Principal 123, Bogotá', 1),
+(1, 'CLI002', 'Innovatech Ltda', 'info@innovatech.co', '555-0102', 'Carrera 7 456, Medellín', 1),
+(1, 'CLI003', 'Digital Consultores', 'ventas@dconsult.co', '555-0103', 'Avenida 9 789, Cali', 1),
+(1, 'CLI004', 'Soluciones Smart', 'contacto@smart.com', '555-0104', 'Calle 80 321, Barranquilla', 1),
+(1, 'CLI005', 'CloudData Inc', 'hello@clouddata.io', '555-0105', 'Paseo 15 654, Bogotá', 1);
+GO
+
+INSERT INTO dbo.contacto (id_cliente, nombre_contacto, puesto_contacto, telefono, celular, correo_electronico, estado) VALUES
+(1, 'Roberto Silva', 'Director de TI', '555-0101', '300-1001', 'roberto@etech.com', 1),
+(1, 'Patricia Gómez', 'Gerente de Proyectos', '555-0101', '300-1002', 'patricia@etech.com', 1),
+(2, 'Luis Martínez', 'Ejecutivo de Ventas', '555-0102', '300-1003', 'luis@innovatech.co', 1),
+(2, 'Sandra Rodríguez', 'Coordinadora Administrativa', '555-0102', '300-1004', 'sandra@innovatech.co', 1),
+(3, 'Miguel Ángel López', 'CEO', '555-0103', '300-1005', 'miguel@dconsult.co', 1),
+(3, 'Gabriela Ruiz', 'Directora Financiera', '555-0103', '300-1006', 'gabriela@dconsult.co', 1),
+(4, 'Fernando Torres', 'Jefe de Operaciones', '555-0104', '300-1007', 'fernando@smart.com', 1),
+(5, 'Isabel Moreno', 'Gerente General', '555-0105', '300-1008', 'isabel@clouddata.io', 1);
+GO
+
+INSERT INTO dbo.oportunidad (numero_oportunidad, id_cliente, id_contacto, id_tipo_oportunidad, id_etapa_oportunidad, id_gestor_comercial, id_asistente_comercial, id_gerente_comercial, nombre_oportunidad, fecha_inicio, fecha_cierre_prevista, cierre_planificado_valor, cierre_planificado_unidad, monto_potencial, id_estado_oportunidad) VALUES
+('OPT001', 1, 1, 1, 2, 2, 4, 1, 'Implementación Sistema ERP', '2026-01-05', '2026-02-19', 45, 'Dias', 250000, 1),
+('OPT002', 1, 2, 2, 3, 2, 4, 1, 'Consultoría Transformación Digital', '2026-01-10', '2026-02-09', 30, 'Dias', 150000, 1),
+('OPT003', 2, 3, 1, 1, 3, 4, 1, 'Desarrollo Plataforma E-commerce', '2026-01-15', '2026-03-16', 60, 'Dias', 500000, 1),
+('OPT004', 2, 4, 3, 4, 3, 4, 1, 'Soporte y Mantenimiento Anual', '2026-01-20', '2026-02-03', 14, 'Dias', 75000, 1),
+('OPT005', 3, 5, 1, 2, 2, 4, 1, 'Migración a Cloud AWS', '2026-02-01', '2026-03-18', 45, 'Dias', 320000, 1),
+('OPT006', 3, 6, 2, 5, 3, 4, 1, 'Auditoría de Seguridad', '2026-02-05', '2026-02-26', 21, 'Dias', 95000, 2),
+('OPT007', 4, 7, 1, 3, 2, 4, 1, 'Sistema de Gestión Inventario', '2026-02-10', '2026-03-31', 50, 'Dias', 280000, 1),
+('OPT008', 5, 8, 2, 2, 3, 4, 1, 'Capacitación en nuevas Tecnologías', '2026-03-05', '2026-03-12', 7, 'Dias', 45000, 1),
+('OPT009', 1, 1, 3, 6, 2, 4, 1, 'Contrato Ganado', '2026-03-01', '2026-03-06', 5, 'Dias', 85000, 3),
+('OPT010', 4, 7, 1, 1, 3, 4, 1, 'Portal de Autoservicio Cliente', '2026-02-15', '2026-05-16', 90, 'Dias', 420000, 1);
+GO
+
+INSERT INTO dbo.actividad (numero_actividad, id_cliente, id_contacto, id_oportunidad, id_usuario_responsable, id_tipo_actividad, id_prioridad_actividad, id_estado_actividad, id_finalizacion_actividad, asunto, fecha_actividad, hora_inicio, hora_final, comentario) VALUES
+('ACT001', 1, 1, 1, 2, 1, 1, 2, NULL, 'Llamada inicial con Director de TI', '2026-01-05', '09:00', '09:30', 'Cliente interesado en demo del ERP'),
+('ACT002', 1, 2, 2, 3, 2, 1, 2, NULL, 'Reunión de scopeo', '2026-01-10', '10:00', '11:30', 'Definición de alcance del proyecto'),
+('ACT003', 2, 3, 3, 2, 1, 2, 2, NULL, 'Presentación propuesta comercial', '2026-01-15', '14:00', '15:00', 'Cliente solicitó presupuesto detallado'),
+('ACT004', 1, 1, 1, 4, 3, 1, 3, 2, 'Envío de documentación técnica', '2026-01-20', '16:00', '16:30', 'Documentación completada'),
+('ACT005', 2, 4, 4, 3, 1, 1, 2, NULL, 'Seguimiento contrato anual', '2026-02-01', '11:00', '11:45', 'Renovación de servicio de soporte'),
+('ACT006', 3, 5, 5, 2, 2, 2, 2, NULL, 'Taller de migración a cloud', '2026-02-10', '09:00', '12:00', 'Capacitación al equipo técnico'),
+('ACT007', 3, 6, 6, 3, 1, 1, 3, 2, 'Auditoría de seguridad completada', '2026-02-20', '10:00', '17:00', 'Informe entregado al cliente'),
+('ACT008', 4, 7, 7, 2, 3, 2, 2, NULL, 'Instalación de servidor', '2026-03-01', '08:00', '14:00', 'Servidor configurado exitosamente'),
+('ACT009', 1, 1, 9, 3, 1, 1, 3, 2, 'Cierre de venta', '2026-03-10', '15:00', '15:30', 'Contrato firmado'),
+('ACT010', 5, 8, 8, 2, 2, 1, 2, NULL, 'Capacitación al equipo de CloudData', '2026-03-20', '09:00', '13:00', 'Módulos de Azure y AWS completados'),
+('ACT011', 1, 2, 2, 4, 1, 1, 2, NULL, 'Entrega de sistema en producción', '2026-04-15', '10:00', '12:00', 'Sistema operativo sin incidentes'),
+('ACT012', 2, 3, 3, 2, 3, 2, 2, NULL, 'Soporte post-implementación', '2026-05-01', '14:00', '17:00', 'Atención a dudas del cliente'),
+('ACT013', 4, 7, 7, 3, 1, 1, 3, 2, 'Capacitación usuarios finales', '2026-05-15', '09:00', '16:00', 'Todos los usuarios entrenados'),
+('ACT014', 3, 5, 5, 2, 2, 1, 2, NULL, 'Optimización de infraestructura', '2026-05-25', '10:00', '14:00', 'Mejora de 30% en performance'),
+('ACT015', 5, 8, 10, 3, 1, 2, 2, NULL, 'Seguimiento final', '2026-06-03', '11:00', '11:30', 'Cliente satisfecho con los resultados');
+GO
+
+-- =========================================================
+-- VALIDACIÓN FINAL
+-- =========================================================
+SELECT 'Usuarios' AS [Tabla], COUNT(*) AS [Registros] FROM dbo.usuario_comercial
+UNION ALL
+SELECT 'Clientes', COUNT(*) FROM dbo.cliente
+UNION ALL
+SELECT 'Contactos', COUNT(*) FROM dbo.contacto
+UNION ALL
+SELECT 'Oportunidades', COUNT(*) FROM dbo.oportunidad
+UNION ALL
+SELECT 'Actividades', COUNT(*) FROM dbo.actividad;
+GO
+
+-- =========================================================
 -- FIN DEL SCRIPT UNIFICADO
 -- =========================================================
-PRINT '✓ Base de datos InnovacionCRM inicializada correctamente con todos los componentes';
+PRINT '✓ Base de datos InnovacionCRM inicializada correctamente con todos los componentes y datos de prueba';

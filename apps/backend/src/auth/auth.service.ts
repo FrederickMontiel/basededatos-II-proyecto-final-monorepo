@@ -1,36 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DataSource } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UsuarioComercial } from '../entities/usuario-comercial.entity';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private dataSource: DataSource,
+    @InjectRepository(UsuarioComercial)
+    private usuarioRepo: Repository<UsuarioComercial>,
   ) {}
 
   async login(correo: string, password: string) {
-    const result = await this.dataSource.query(
-      'SELECT id_usuario_comercial, correo, password_hash, nombres, apellidos, id_rol_usuario FROM dbo.usuario_comercial WHERE correo = @correo AND estado = 1',
-      [correo],
-    );
+    const usuario = await this.usuarioRepo.findOne({
+      where: { correo, estado: true },
+    });
 
-    if (result.length === 0) {
+    if (!usuario) {
       throw new Error('Usuario o contraseña inválidos');
     }
 
-    const usuario = result[0];
     const passwordMatch = await bcrypt.compare(password, usuario.password_hash);
 
     if (!passwordMatch) {
       throw new Error('Usuario o contraseña inválidos');
     }
 
-    await this.dataSource.query(
-      'UPDATE dbo.usuario_comercial SET ultimo_acceso = GETDATE() WHERE id_usuario_comercial = @id',
-      [usuario.id_usuario_comercial],
-    );
+    usuario.ultimo_acceso = new Date();
+    await this.usuarioRepo.save(usuario);
 
     const payload = {
       sub: usuario.id_usuario_comercial,

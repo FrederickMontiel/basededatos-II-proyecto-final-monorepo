@@ -18,6 +18,7 @@ import { ReportesController } from './reportes/reportes.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { UsuarioComercial } from './entities/usuario-comercial.entity';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -60,6 +61,7 @@ console.log('🔌 DB Credentials:', {
       secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
       signOptions: { expiresIn: '1h' },
     }),
+    TypeOrmModule.forFeature([UsuarioComercial]),
   ],
   controllers: [
     AppController,

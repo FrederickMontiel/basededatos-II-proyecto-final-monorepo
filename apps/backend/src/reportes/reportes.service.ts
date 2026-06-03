@@ -5,24 +5,35 @@ import { DataSource } from 'typeorm';
 export class ReportesService {
   constructor(private dataSource: DataSource) {}
 
+  async listar() {
+    return [];
+  }
+
+  async obtenerPorId(id: number) {
+    return null;
+  }
+
   async oportunidadesPorFecha(fechaInicio: string, fechaFin: string) {
-    return await this.dataSource.query(
-      'EXEC sp_informe_oportunidades_por_fecha @fecha_inicio, @fecha_fin',
-      [fechaInicio, fechaFin],
-    );
+    const inicio = new Date(fechaInicio).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-');
+    const fin = new Date(fechaFin).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join('-');
+    const sql = `
+      DECLARE @fecha_inicio DATE = '${inicio}';
+      DECLARE @fecha_fin DATE = '${fin}';
+      EXEC sp_informe_oportunidades_por_fecha @fecha_inicio, @fecha_fin;
+    `;
+    return await this.dataSource.query(sql);
   }
 
   async oportunidadesPorGestor(idGestor: number) {
-    return await this.dataSource.query(
-      'EXEC sp_informe_oportunidades_por_gestor @id_gestor_comercial',
-      [idGestor],
-    );
+    const sql = `
+      DECLARE @id_gestor_comercial INT = ${idGestor};
+      EXEC sp_informe_oportunidades_por_gestor @id_gestor_comercial;
+    `;
+    return await this.dataSource.query(sql);
   }
 
   async oportunidadesGanadas() {
-    return await this.dataSource.query(
-      'EXEC sp_informe_oportunidades_ganadas_perdidas',
-      [],
-    );
+    const sql = `EXEC sp_informe_oportunidades_ganadas_perdidas;`;
+    return await this.dataSource.query(sql);
   }
 }

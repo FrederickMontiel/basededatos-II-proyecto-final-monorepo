@@ -1,0 +1,70 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar Contacto' : 'Nuevo Contacto' }}</h2>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="loading && isEditing" class="loading">Cargando contacto...</div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!loading || !isEditing" class="form">
+    <div class="form-group">
+      <label for="id_cliente">Cliente</label>
+      <select id="id_cliente" formControlName="id_cliente" class="form-control"
+        [class.is-invalid]="submitted && f['id_cliente'].errors">
+        <option value="">Seleccionar cliente</option>
+        <option *ngFor="let c of clientes" [value]="c.id_cliente">{{ c.nombre_comercial }}</option>
+      </select>
+      <div *ngIf="submitted && f['id_cliente'].errors" class="invalid-feedback">
+        Cliente requerido
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="nombre_contacto">Nombre</label>
+      <input type="text" id="nombre_contacto" formControlName="nombre_contacto" class="form-control"
+        [class.is-invalid]="submitted && f['nombre_contacto'].errors" />
+      <div *ngIf="submitted && f['nombre_contacto'].errors" class="invalid-feedback">
+        Nombre requerido
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="puesto_contacto">Puesto</label>
+      <input type="text" id="puesto_contacto" formControlName="puesto_contacto" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="telefono">Teléfono</label>
+      <input type="text" id="telefono" formControlName="telefono" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="celular">Celular</label>
+      <input type="text" id="celular" formControlName="celular" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label for="correo_electronico">Correo</label>
+      <input type="email" id="correo_electronico" formControlName="correo_electronico" class="form-control"
+        [class.is-invalid]="submitted && f['correo_electronico'].errors" />
+      <div *ngIf="submitted && f['correo_electronico'].errors" class="invalid-feedback">
+        <div *ngIf="f['correo_electronico'].errors['email']">Correo inválido</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="estado">Estado</label>
+      <select id="estado" formControlName="estado" class="form-control">
+        <option value="1">Activo</option>
+        <option value="0">Inactivo</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        {{ isEditing ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+</div>

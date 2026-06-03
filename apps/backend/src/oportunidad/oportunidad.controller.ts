@@ -10,6 +10,20 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class OportunidadController {
   constructor(private oportunidadService: OportunidadService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Listar todas las oportunidades' })
+  @ApiResponse({ status: 200, description: 'Lista de oportunidades' })
+  async listar() {
+    return this.oportunidadService.listar();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener oportunidad por ID' })
+  @ApiResponse({ status: 200, description: 'Oportunidad encontrada' })
+  async obtenerPorId(@Param('id') id: number) {
+    return this.oportunidadService.obtenerPorId(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Crear nueva oportunidad' })
   @ApiResponse({ status: 201, description: 'Oportunidad creada exitosamente' })

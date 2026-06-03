@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { RolUsuario } from './rol-usuario.entity';
 import { Oportunidad } from './oportunidad.entity';
 import { Actividad } from './actividad.entity';
@@ -36,6 +36,7 @@ export class UsuarioComercial {
   fecha_creacion: Date;
 
   @ManyToOne(() => RolUsuario, (rol) => rol.usuarios)
+  @JoinColumn({ name: 'id_rol_usuario' })
   rol: RolUsuario;
 
   @OneToMany(() => Oportunidad, (oportunidad) => oportunidad.gestor)
