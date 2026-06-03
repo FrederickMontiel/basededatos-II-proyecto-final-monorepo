@@ -1,0 +1,15 @@
+export { RolUsuario } from './rol-usuario.entity';
+export { UsuarioComercial } from './usuario-comercial.entity';
+export { TipoCliente } from './tipo-cliente.entity';
+export { Cliente } from './cliente.entity';
+export { Contacto } from './contacto.entity';
+export { TipoOportunidad } from './tipo-oportunidad.entity';
+export { EstadoOportunidad } from './estado-oportunidad.entity';
+export { EtapaOportunidad } from './etapa-oportunidad.entity';
+export { Oportunidad } from './oportunidad.entity';
+export { TipoActividad } from './tipo-actividad.entity';
+export { PrioridadActividad } from './prioridad-actividad.entity';
+export { EstadoActividad } from './estado-actividad.entity';
+export { FinalizacionActividad } from './finalizacion-actividad.entity';
+export { Actividad } from './actividad.entity';
+export { DetalleReunion } from './detalle-reunion.entity';

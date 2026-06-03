@@ -1,8 +1,23 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ClienteService } from './cliente/cliente.service';
+import { ClienteController } from './cliente/cliente.controller';
+import { ContactoService } from './contacto/contacto.service';
+import { ContactoController } from './contacto/contacto.controller';
+import { OportunidadService } from './oportunidad/oportunidad.service';
+import { OportunidadController } from './oportunidad/oportunidad.controller';
+import { ActividadService } from './actividad/actividad.service';
+import { ActividadController } from './actividad/actividad.controller';
+import { ReportesService } from './reportes/reportes.service';
+import { ReportesController } from './reportes/reportes.controller';
+import { AuthService } from './auth/auth.service';
+import { AuthController } from './auth/auth.controller';
+import { JwtStrategy } from './auth/jwt.strategy';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
@@ -40,8 +55,30 @@ console.log('🔌 DB Credentials:', {
         encrypt: false,
       },
     }),
+    PassportModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'your-secret-key-change-in-production',
+      signOptions: { expiresIn: '1h' },
+    }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    AppController,
+    AuthController,
+    ClienteController,
+    ContactoController,
+    OportunidadController,
+    ActividadController,
+    ReportesController,
+  ],
+  providers: [
+    AppService,
+    AuthService,
+    JwtStrategy,
+    ClienteService,
+    ContactoService,
+    OportunidadService,
+    ActividadService,
+    ReportesService,
+  ],
 })
 export class AppModule { }

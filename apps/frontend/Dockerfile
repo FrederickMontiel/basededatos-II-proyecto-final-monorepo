@@ -1,13 +1,13 @@
 FROM node:18-alpine
 
+# Install pnpm
+RUN npm install -g pnpm @angular/cli
+
 WORKDIR /app
 
-# Install Angular CLI
-RUN npm install -g @angular/cli
-
 # Install dependencies
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
+COPY package*.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .

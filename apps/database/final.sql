@@ -144,8 +144,10 @@ CREATE TABLE dbo.usuario_comercial (
     nombres VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
     correo VARCHAR(120) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     telefono VARCHAR(25) NULL,
     estado BIT NOT NULL CONSTRAINT df_usuario_comercial_estado DEFAULT 1,
+    ultimo_acceso DATETIME2 NULL,
     fecha_creacion DATETIME2 NOT NULL CONSTRAINT df_usuario_fecha DEFAULT SYSDATETIME(),
     CONSTRAINT pk_usuario_comercial PRIMARY KEY (id_usuario_comercial),
     CONSTRAINT uq_usuario_correo UNIQUE (correo),
@@ -294,7 +296,7 @@ GO
 -- SECCION 4: FUNCIONES
 -- =========================================================
 
-CREATE FUNCTION dbo.fn_CalcularMontoPonderado
+CREATE FUNCTION dbo.fn_calcular_monto_ponderado
 (
     @monto_potencial DECIMAL(14,2),
     @porcentaje_avance DECIMAL(5,2)
@@ -308,7 +310,7 @@ BEGIN
 END;
 GO
 
-CREATE FUNCTION dbo.fn_ObtenerPorcentajeEtapa
+CREATE FUNCTION dbo.fn_obtener_porcentaje_etapa
 (
     @id_etapa_oportunidad INT
 )
@@ -638,7 +640,7 @@ GO
 -- SECCION 7: PROCEDIMIENTOS DE OPORTUNIDADES
 -- =========================================================
 
-CREATE PROCEDURE dbo.sp_CrearOportunidad
+CREATE PROCEDURE dbo.sp_crear_oportunidad
     @numero_oportunidad VARCHAR(30),
     @id_cliente INT,
     @id_contacto INT,
@@ -660,8 +662,8 @@ BEGIN
     DECLARE @fecha_cierre_prevista DATE;
 
     SELECT @id_estado_abierto = id_estado_oportunidad FROM dbo.estado_oportunidad WHERE nombre_estado = 'Abierto';
-    SET @porcentaje_avance = dbo.fn_ObtenerPorcentajeEtapa(@id_etapa_oportunidad);
-    SET @monto_ponderado = dbo.fn_CalcularMontoPonderado(@monto_potencial, @porcentaje_avance);
+    SET @porcentaje_avance = dbo.fn_obtener_porcentaje_etapa(@id_etapa_oportunidad);
+    SET @monto_ponderado = dbo.fn_calcular_monto_ponderado(@monto_potencial, @porcentaje_avance);
 
     IF @cierre_planificado_unidad = 'Dias'
         SET @fecha_cierre_prevista = DATEADD(DAY, @cierre_planificado_valor, CAST(GETDATE() AS DATE));
@@ -725,7 +727,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE dbo.sp_ActualizarOportunidad
+CREATE PROCEDURE dbo.sp_actualizar_oportunidad
     @id_oportunidad INT,
     @nombre_oportunidad VARCHAR(150),
     @id_gestor_comercial INT,
@@ -743,8 +745,8 @@ BEGIN
     DECLARE @fecha_cierre_prevista DATE;
 
     SELECT @id_etapa_oportunidad = id_etapa_oportunidad FROM dbo.oportunidad WHERE id_oportunidad = @id_oportunidad;
-    SET @porcentaje_avance = dbo.fn_ObtenerPorcentajeEtapa(@id_etapa_oportunidad);
-    SET @monto_ponderado = dbo.fn_CalcularMontoPonderado(@monto_potencial, @porcentaje_avance);
+    SET @porcentaje_avance = dbo.fn_obtener_porcentaje_etapa(@id_etapa_oportunidad);
+    SET @monto_ponderado = dbo.fn_calcular_monto_ponderado(@monto_potencial, @porcentaje_avance);
 
     IF @cierre_planificado_unidad = 'Dias'
         SET @fecha_cierre_prevista = DATEADD(DAY, @cierre_planificado_valor, CAST(GETDATE() AS DATE));
@@ -771,7 +773,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE dbo.sp_CambiarEtapaOportunidad
+CREATE PROCEDURE dbo.sp_cambiar_etapa_oportunidad
     @id_oportunidad INT,
     @id_etapa_oportunidad INT
 AS
@@ -781,9 +783,9 @@ BEGIN
     DECLARE @monto_potencial DECIMAL(14,2);
     DECLARE @monto_ponderado DECIMAL(14,2);
 
-    SET @porcentaje_avance = dbo.fn_ObtenerPorcentajeEtapa(@id_etapa_oportunidad);
+    SET @porcentaje_avance = dbo.fn_obtener_porcentaje_etapa(@id_etapa_oportunidad);
     SELECT @monto_potencial = monto_potencial FROM dbo.oportunidad WHERE id_oportunidad = @id_oportunidad;
-    SET @monto_ponderado = dbo.fn_CalcularMontoPonderado(@monto_potencial, @porcentaje_avance);
+    SET @monto_ponderado = dbo.fn_calcular_monto_ponderado(@monto_potencial, @porcentaje_avance);
 
     UPDATE dbo.oportunidad
     SET id_etapa_oportunidad = @id_etapa_oportunidad,
@@ -794,7 +796,7 @@ BEGIN
 END;
 GO
 
-CREATE PROCEDURE dbo.sp_CerrarOportunidad
+CREATE PROCEDURE dbo.sp_cerrar_oportunidad
     @id_oportunidad INT,
     @id_estado_oportunidad INT,
     @comentario_cierre VARCHAR(500)
@@ -1024,7 +1026,7 @@ GO
 -- SECCION 9: TRIGGERS
 -- =========================================================
 
-CREATE TRIGGER dbo.trg_ValidarCierreOportunidad
+CREATE TRIGGER dbo.trg_validar_cierre_oportunidad
 ON dbo.oportunidad
 AFTER UPDATE
 AS
@@ -1043,7 +1045,7 @@ BEGIN
 END;
 GO
 
-CREATE TRIGGER dbo.trg_ExigirComentarioCierre
+CREATE TRIGGER dbo.trg_exigir_comentario_cierre
 ON dbo.oportunidad
 AFTER UPDATE
 AS
