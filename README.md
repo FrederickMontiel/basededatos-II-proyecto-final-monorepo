@@ -116,12 +116,12 @@ apps/backend/
 │   ├── main.ts                 # Punto de entrada
 │   ├── app.module.ts           # Módulo raíz
 │   ├── entities/               # Entidades TypeORM
-│   ├── modules/                # Módulos (clientes, oportunidades, etc.)
-│   │   ├── clientes/
-│   │   ├── contactos/
-│   │   ├── oportunidades/
-│   │   └── actividades/
-│   └── migrations/             # Migraciones DB
+│   ├── auth/                   # Autenticación JWT
+│   ├── cliente/                # Gestión de clientes
+│   ├── contacto/               # Gestión de contactos
+│   ├── actividad/              # Gestión de actividades
+│   ├── oportunidad/            # Gestión de oportunidades
+│   └── reportes/               # Reportes
 ├── Dockerfile
 └── package.json
 ```
@@ -153,6 +153,11 @@ apps/database/
 
 ## Módulos del Sistema
 
+### 0. Autenticación
+- Login con usuario y contraseña
+- Token JWT para APIs
+- Roles de usuario (Administrador, Gestor Comercial, Consultor)
+
 ### 1. Clientes
 - Crear, actualizar, consultar clientes
 - Tipos: Potencial, Final
@@ -160,7 +165,7 @@ apps/database/
 
 ### 2. Contactos
 - Gestionar contactos por cliente
-- Información: nombre, puesto, teléfono, correo
+- Campos: nombre, puesto, teléfono, correo, empresa
 
 ### 3. Oportunidades
 - Crear oportunidades de venta
@@ -175,9 +180,10 @@ apps/database/
 - Estados personalizados según tipo
 
 ### 5. Reportes
-- Oportunidades por fecha
-- Oportunidades por gestor
-- Oportunidades ganadas/perdidas
+- Oportunidades por rango de fechas
+- Oportunidades por usuario comercial
+- Análisis de conversión (ganadas/perdidas)
+- Resumen de actividades
 
 ## Variables de Entorno
 
@@ -283,7 +289,3 @@ Cambiar credenciales en `.env.production`.
 ## Licencia
 
 MIT
-
-## Contacto
-
-Frederick Montiel - femontielt@gmail.com
