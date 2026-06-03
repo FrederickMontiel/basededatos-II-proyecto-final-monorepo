@@ -47,9 +47,9 @@ npm run dev:down
 
 ### 3. Acceder a las aplicaciones
 
-- **Frontend (Angular)**: http://localhost:4200
-- **Backend (API)**: http://localhost:3000/api
-- **Database (MSSQL)**: localhost:1433
+- **Frontend (Angular)**: http://localhost:5003
+- **Backend (API)**: http://localhost:5002/api
+- **Database (MSSQL)**: localhost:5001
 
 ### 4. Inicializar base de datos
 
@@ -58,13 +58,15 @@ npm run dev:down
 npm run db:init
 ```
 
-## Credenciales por Defecto
+## Puertos y Credenciales
 
-| Servicio | Usuario | Contraseña |
-|----------|---------|------------|
-| MSSQL    | sa      | YourPassword123 |
+| Servicio | Puerto Expuesto | Usuario | Contraseña |
+|----------|-----------------|---------|------------|
+| MSSQL    | 5001            | sa      | YourPassword123 |
+| Backend  | 5002            | -       | -           |
+| Frontend | 5003            | -       | -           |
 
-⚠️ **Cambiar en producción**
+⚠️ **Cambiar credenciales en producción**
 
 ## Desarrollo
 
@@ -184,17 +186,17 @@ apps/database/
 ```
 NODE_ENV=development
 DATABASE_HOST=mssql
-DATABASE_PORT=1433
+DATABASE_PORT=1433          # Puerto interno de Docker
 DATABASE_USER=sa
 DATABASE_PASSWORD=YourPassword123
 DATABASE_NAME=InnovacionCRM
-PORT=3000
+PORT=3000                   # Puerto interno de Docker
 ```
 
 ### Frontend (environment.ts)
 
 ```
-API_URL=http://localhost:3000/api
+API_URL=http://localhost:5002/api  # Puerto expuesto en máquina local
 ```
 
 ## Migraciones de Base de Datos
@@ -222,13 +224,20 @@ cd apps/frontend && npm test
 
 ### Puerto ya en uso
 
-Si el puerto está ocupado:
+Si el puerto está ocupado, cambiar en docker-compose.yml:
 
-```bash
-# Cambiar puertos en docker-compose.yml
-# MSSQL: cambiar 1433:1433
-# Backend: cambiar 3000:3000
-# Frontend: cambiar 4200:4200
+```yaml
+mssql:
+  ports:
+    - "5001:1433"  # Puerto expuesto:interno
+
+backend:
+  ports:
+    - "5002:3000"
+
+frontend:
+  ports:
+    - "5003:4200"
 ```
 
 ### MSSQL no inicia

@@ -34,9 +34,6 @@ Thumbs.db
 # Docker
 .dockerignore
 
-# MSSQL grupo (no incluir en repo)
-mssql/grupo/
-
 # Temporal
 tmp/
 temp/
