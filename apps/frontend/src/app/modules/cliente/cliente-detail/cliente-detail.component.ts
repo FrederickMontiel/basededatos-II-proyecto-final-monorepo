@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClienteService, Cliente } from '../cliente.service';
+import { CatalogoService } from '../../../services/catalogo.service';
 
 @Component({
   selector: 'app-cliente-detail',
@@ -18,10 +19,12 @@ export class ClienteDetailComponent implements OnInit {
   error = '';
   isEditing = false;
   clienteId: number | null = null;
+  tiposCliente: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private clienteService: ClienteService,
+    private catalogoService: CatalogoService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
@@ -37,12 +40,20 @@ export class ClienteDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.cargarTiposCliente();
     this.route.params.subscribe((params) => {
       if (params['id']) {
         this.clienteId = +params['id'];
         this.isEditing = true;
         this.cargarCliente(this.clienteId!);
       }
+    });
+  }
+
+  cargarTiposCliente() {
+    this.catalogoService.getTiposCliente().subscribe({
+      next: (data) => (this.tiposCliente = data),
+      error: () => (this.tiposCliente = []),
     });
   }
 

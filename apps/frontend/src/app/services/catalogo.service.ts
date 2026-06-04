@@ -7,6 +7,10 @@ import { ApiService } from './api.service';
 export class CatalogoService {
   constructor(private apiService: ApiService) {}
 
+  getTiposCliente() {
+    return this.apiService.get<any[]>('/catalogos/tipos-cliente');
+  }
+
   getTiposOportunidad() {
     return this.apiService.get<any[]>('/catalogos/tipos-oportunidad');
   }

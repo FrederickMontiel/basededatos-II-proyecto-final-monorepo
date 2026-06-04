@@ -86,9 +86,8 @@
     <div class="form-group">
       <label for="id_tipo_cliente">Tipo Cliente</label>
       <select id="id_tipo_cliente" formControlName="id_tipo_cliente" class="form-control">
-        <option value="1">Tipo 1</option>
-        <option value="2">Tipo 2</option>
-        <option value="3">Tipo 3</option>
+        <option value="">Seleccionar tipo</option>
+        <option *ngFor="let tipo of tiposCliente" [value]="tipo.id">{{ tipo.nombre }}</option>
       </select>
     </div>
 

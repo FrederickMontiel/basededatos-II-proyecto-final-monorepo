@@ -5,6 +5,11 @@ import { DataSource } from 'typeorm';
 export class CatalogoService {
   constructor(private dataSource: DataSource) {}
 
+  async getTiposCliente() {
+    const sql = 'SELECT id_tipo_cliente as id, nombre_tipo as nombre, descripcion FROM dbo.tipo_cliente WHERE estado = 1 ORDER BY nombre_tipo';
+    return await this.dataSource.query(sql);
+  }
+
   async getTiposOportunidad() {
     const sql = 'SELECT id_tipo_oportunidad as id, nombre_tipo as nombre, descripcion FROM dbo.tipo_oportunidad WHERE estado = 1 ORDER BY nombre_tipo';
     return await this.dataSource.query(sql);

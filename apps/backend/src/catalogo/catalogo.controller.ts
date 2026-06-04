@@ -7,6 +7,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class CatalogoController {
   constructor(private catalogoService: CatalogoService) {}
 
+  @Get('tipos-cliente')
+  async getTiposCliente() {
+    return await this.catalogoService.getTiposCliente();
+  }
+
   @Get('tipos-oportunidad')
   async getTiposOportunidad() {
     return await this.catalogoService.getTiposOportunidad();
