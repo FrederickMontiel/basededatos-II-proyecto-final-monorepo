@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit {
       path: '/oportunidades',
       description: 'Oportunidades de venta',
     },
-    { name: 'Actividades', icon: '📋', path: '/actividades', description: 'Actividades' },
     { name: 'Reportes', icon: '📊', path: '/reportes', description: 'Reportes y análisis' },
   ];
 

@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="header">
+    <div>
+      <h2>Actividades - {{ oportunidad?.nombre_oportunidad }}</h2>
+      <p class="subtitle">Oportunidad: {{ oportunidad?.numero_oportunidad }}</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-primary" (click)="crearActividad()">+ Nueva Actividad</button>
+      <button class="btn btn-secondary" (click)="volver()">Volver</button>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="loading" class="loading">Cargando actividades...</div>
+
+  <div *ngIf="!loading && actividades.length > 0" class="activities-list">
+    <div *ngFor="let actividad of actividades" class="activity-card">
+      <div class="activity-header">
+        <h3>{{ actividad.asunto || actividad.descripcion }}</h3>
+        <span class="activity-date">{{ actividad.fecha_creacion | date: 'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="activity-body">
+        <div class="activity-row">
+          <span class="label">Tipo:</span>
+          <span class="value">{{ actividad.id_tipo_actividad }}</span>
+        </div>
+        <div class="activity-row">
+          <span class="label">Prioridad:</span>
+          <span class="value">{{ actividad.id_prioridad_actividad }}</span>
+        </div>
+        <div class="activity-row">
+          <span class="label">Estado:</span>
+          <span class="value">{{ actividad.id_estado_actividad }}</span>
+        </div>
+      </div>
+      <div class="activity-actions">
+        <button class="btn btn-sm btn-warning" (click)="editar(actividad.id_actividad!)">Editar</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminar(actividad.id_actividad!)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && actividades.length === 0" class="empty-state">
+    <p>No hay actividades para esta oportunidad. <a (click)="crearActividad()">Crear una nueva</a></p>
+  </div>
+</div>

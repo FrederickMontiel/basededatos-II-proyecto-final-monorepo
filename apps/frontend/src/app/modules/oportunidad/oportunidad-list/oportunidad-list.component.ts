@@ -88,4 +88,8 @@ export class OportunidadListComponent implements OnInit {
   ver(id: number) {
     this.router.navigate(['/oportunidades', id]);
   }
+
+  verActividades(id: number) {
+    this.router.navigate(['/oportunidades', id, 'actividades']);
+  }
 }

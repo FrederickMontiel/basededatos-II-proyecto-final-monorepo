@@ -44,4 +44,8 @@ export class ActividadService {
   eliminar(id: number) {
     return this.apiService.delete<void>(`/actividades/${id}`);
   }
+
+  listarPorOportunidad(idOportunidad: number) {
+    return this.apiService.get<Actividad[]>(`/actividades/oportunidad/${idOportunidad}`);
+  }
 }
