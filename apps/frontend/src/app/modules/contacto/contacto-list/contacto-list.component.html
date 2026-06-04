@@ -7,31 +7,32 @@
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
   <div *ngIf="loading" class="loading">Cargando contactos...</div>
 
-  <div *ngIf="!loading && contactos.length > 0" class="table-container">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Puesto</th>
-          <th>Teléfono</th>
-          <th>Correo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let contacto of contactos">
-          <td>{{ contacto.nombre_contacto }}</td>
-          <td>{{ contacto.puesto_contacto }}</td>
-          <td>{{ contacto.telefono }}</td>
-          <td>{{ contacto.correo_electronico }}</td>
-          <td>
-            <button class="btn btn-sm btn-info" (click)="ver(contacto.id_contacto!)">Ver</button>
-            <button class="btn btn-sm btn-warning" (click)="editar(contacto.id_contacto!)">Editar</button>
-            <button class="btn btn-sm btn-danger" (click)="eliminar(contacto.id_contacto!)">Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div *ngIf="!loading && contactos.length > 0" class="cards-grid">
+    <div *ngFor="let contacto of contactos" class="card">
+      <div class="card-header">
+        <h3>{{ contacto.nombre_contacto }}</h3>
+        <span class="card-badge">{{ contacto.puesto_contacto }}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-row">
+          <span class="label">Teléfono:</span>
+          <span class="value">{{ contacto.telefono || 'N/A' }}</span>
+        </div>
+        <div class="card-row">
+          <span class="label">Celular:</span>
+          <span class="value">{{ contacto.celular || 'N/A' }}</span>
+        </div>
+        <div class="card-row">
+          <span class="label">Correo:</span>
+          <span class="value email-value">{{ contacto.correo_electronico }}</span>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-sm btn-info" (click)="ver(contacto.id_contacto!)">Ver</button>
+        <button class="btn btn-sm btn-warning" (click)="editar(contacto.id_contacto!)">Editar</button>
+        <button class="btn btn-sm btn-danger" (click)="eliminar(contacto.id_contacto!)">Eliminar</button>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="!loading && contactos.length === 0" class="empty-state">

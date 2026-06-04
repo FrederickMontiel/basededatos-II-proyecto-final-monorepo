@@ -52,7 +52,7 @@ export class OportunidadDetailComponent implements OnInit {
     });
 
     this.form.get('id_cliente')?.valueChanges.subscribe((idCliente) => {
-      this.filtrarContactos(idCliente);
+      this.filtrarContactos(parseInt(idCliente));
     });
   }
 
