@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { ClienteService, Cliente } from '../cliente.service';
 import { CatalogoService } from '../../../services/catalogo.service';
 
@@ -40,12 +41,34 @@ export class ClienteDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cargarTiposCliente();
     this.route.params.subscribe((params) => {
       if (params['id']) {
         this.clienteId = +params['id'];
         this.isEditing = true;
-        setTimeout(() => this.cargarCliente(this.clienteId!), 100);
+        forkJoin([
+          this.catalogoService.getTiposCliente(),
+          this.clienteService.obtenerPorId(this.clienteId!),
+        ]).subscribe({
+          next: ([tipos, cliente]) => {
+            this.tiposCliente = tipos;
+            this.form.patchValue({
+              codigo: cliente.codigo_cliente,
+              nombre: cliente.nombre_comercial,
+              direccion: cliente.direccion_empresa,
+              telefono: cliente.telefono,
+              correo: cliente.correo_electronico,
+              id_tipo_cliente: cliente.id_tipo_cliente,
+              estado: cliente.estado,
+            });
+            this.loading = false;
+          },
+          error: () => {
+            this.error = 'Error al cargar cliente';
+            this.loading = false;
+          },
+        });
+      } else {
+        this.cargarTiposCliente();
       }
     });
   }
@@ -54,28 +77,6 @@ export class ClienteDetailComponent implements OnInit {
     this.catalogoService.getTiposCliente().subscribe({
       next: (data) => (this.tiposCliente = data),
       error: () => (this.tiposCliente = []),
-    });
-  }
-
-  cargarCliente(id: number) {
-    this.loading = true;
-    this.clienteService.obtenerPorId(id).subscribe({
-      next: (cliente) => {
-        this.form.patchValue({
-          codigo: cliente.codigo_cliente,
-          nombre: cliente.nombre_comercial,
-          direccion: cliente.direccion_empresa,
-          telefono: cliente.telefono,
-          correo: cliente.correo_electronico,
-          id_tipo_cliente: cliente.id_tipo_cliente,
-          estado: cliente.estado,
-        });
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Error al cargar cliente';
-        this.loading = false;
-      },
     });
   }
 
@@ -119,5 +120,10 @@ export class ClienteDetailComponent implements OnInit {
 
   cancelar() {
     this.router.navigate(['/clientes']);
+  }
+
+  compareById(a: any, b: any): boolean {
+    if (a === null || b === null) return a === b;
+    return a === b;
   }
 }

@@ -85,8 +85,8 @@
 
     <div class="form-group">
       <label for="id_tipo_cliente">Tipo Cliente</label>
-      <select id="id_tipo_cliente" formControlName="id_tipo_cliente" class="form-control">
-        <option value="">Seleccionar tipo</option>
+      <select id="id_tipo_cliente" formControlName="id_tipo_cliente" class="form-control" [compareWith]="compareById">
+        <option [value]="null">Seleccionar tipo</option>
         <option *ngFor="let tipo of tiposCliente" [value]="tipo.id">{{ tipo.nombre }}</option>
       </select>
     </div>
