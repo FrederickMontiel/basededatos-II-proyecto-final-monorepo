@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { ActividadService } from '../actividad.service';
 import { ClienteService } from '../../cliente/cliente.service';
 
@@ -25,6 +26,7 @@ export class ActividadDetailComponent implements OnInit {
     private clienteService: ClienteService,
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
   ) {
     this.form = this.formBuilder.group({
       id_cliente: ['', Validators.required],
@@ -80,6 +82,6 @@ export class ActividadDetailComponent implements OnInit {
   }
 
   cancelar() {
-    this.router.navigate(['/actividades']);
+    this.location.back();
   }
 }
