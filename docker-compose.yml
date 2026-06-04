@@ -8,10 +8,11 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "Pass1234"
-      MSSQL_PID: "Express"
+      MSSQL_PID: "Standard"
     volumes:
       - mssql-data:/var/opt/mssql
-      #- ./apps/database:/scripts
+      - ./apps/database:/scripts
+      - ./init-mssql.sh:/init-mssql.sh
     networks:
       - innovacion-net
     healthcheck:
@@ -19,6 +20,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    entrypoint: /bin/bash -c "/init-mssql.sh innovacion-crm-mssql principal & /opt/mssql/bin/sqlservr"
 
   # MSSQL Mirror (5005)
   mssql-mirror:
@@ -29,9 +31,12 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "Pass1234"
-      MSSQL_PID: "Express"
+      MSSQL_PID: "Standard"
     volumes:
       - mssql-mirror-data:/var/opt/mssql
+      - mssql-data:/mnt/principal_backup:ro
+      - ./apps/database:/scripts
+      - ./init-mssql.sh:/init-mssql.sh
     networks:
       - innovacion-net
     healthcheck:
@@ -39,6 +44,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    entrypoint: /bin/bash -c "/init-mssql.sh innovacion-crm-mssql-mirror mirror & /opt/mssql/bin/sqlservr"
 
   # MSSQL Witness (5004) - para failover automático
   mssql-witness:
@@ -49,9 +55,11 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "Pass1234"
-      MSSQL_PID: "Express"
+      MSSQL_PID: "Standard"
     volumes:
       - mssql-witness-data:/var/opt/mssql
+      - ./apps/database:/scripts
+      - ./init-mssql.sh:/init-mssql.sh
     networks:
       - innovacion-net
     healthcheck:
@@ -59,6 +67,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    entrypoint: /bin/bash -c "/init-mssql.sh innovacion-crm-mssql-witness witness & /opt/mssql/bin/sqlservr"
 
   # NestJS Backend
   backend:
