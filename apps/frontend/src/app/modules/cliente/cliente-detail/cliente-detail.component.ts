@@ -45,7 +45,7 @@ export class ClienteDetailComponent implements OnInit {
       if (params['id']) {
         this.clienteId = +params['id'];
         this.isEditing = true;
-        this.cargarCliente(this.clienteId!);
+        setTimeout(() => this.cargarCliente(this.clienteId!), 100);
       }
     });
   }
