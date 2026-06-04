@@ -1,0 +1,95 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar' : 'Nueva' }} Oportunidad</h2>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <div class="form-grid">
+      <!-- Row 1: Número (disabled), Cliente, Tipo Oportunidad -->
+      <div class="form-group">
+        <label for="numero">Número</label>
+        <input type="text" id="numero" formControlName="numero_oportunidad" class="form-control" [disabled]="true" />
+      </div>
+
+      <div class="form-group">
+        <label for="cliente">Cliente *</label>
+        <select id="cliente" formControlName="id_cliente" class="form-control">
+          <option value="">Seleccionar cliente</option>
+          <option *ngFor="let c of clientes" [value]="c.id_cliente">{{ c.nombre_comercial }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="tipo">Tipo Oportunidad *</label>
+        <select id="tipo" formControlName="id_tipo_oportunidad" class="form-control">
+          <option value="">Seleccionar tipo</option>
+          <option *ngFor="let t of tiposOportunidad" [value]="t.id">{{ t.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Row 2: Contacto, Nombre -->
+      <div class="form-group">
+        <label for="contacto">Contacto *</label>
+        <select id="contacto" formControlName="id_contacto" class="form-control">
+          <option value="">Seleccionar contacto</option>
+          <option *ngFor="let c of contactosFiltrados" [value]="c.id_contacto">{{ c.nombre_contacto }}</option>
+        </select>
+      </div>
+
+      <div class="form-group form-span-2">
+        <label for="nombre">Nombre Oportunidad *</label>
+        <input type="text" id="nombre" formControlName="nombre_oportunidad" placeholder="Nombre" class="form-control" />
+      </div>
+
+      <!-- Row 3: Monto, Cierre Valor, Cierre Unidad -->
+      <div class="form-group">
+        <label for="monto">Monto Potencial *</label>
+        <input type="number" id="monto" formControlName="monto_potencial" placeholder="0.00" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="cierre_valor">Cierre Plazo (Valor) *</label>
+        <input type="number" id="cierre_valor" formControlName="cierre_planificado_valor" placeholder="30" class="form-control" />
+      </div>
+
+      <div class="form-group">
+        <label for="cierre_unidad">Unidad *</label>
+        <select id="cierre_unidad" formControlName="cierre_planificado_unidad" class="form-control">
+          <option *ngFor="let u of unidadesTiempo" [value]="u">{{ u }}</option>
+        </select>
+      </div>
+
+      <!-- Row 4: Gestor, Asistente, Gerente -->
+      <div class="form-group">
+        <label for="gestor">Gestor Comercial *</label>
+        <select id="gestor" formControlName="id_gestor_comercial" class="form-control">
+          <option value="">Seleccionar gestor</option>
+          <option *ngFor="let g of gestores" [value]="g.id">{{ g.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="asistente">Asistente Comercial *</label>
+        <select id="asistente" formControlName="id_asistente_comercial" class="form-control">
+          <option value="">Seleccionar asistente</option>
+          <option *ngFor="let a of asistentes" [value]="a.id">{{ a.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="gerente">Gerente Comercial *</label>
+        <select id="gerente" formControlName="id_gerente_comercial" class="form-control">
+          <option value="">Seleccionar gerente</option>
+          <option *ngFor="let g of gerentes" [value]="g.id">{{ g.nombre }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="loading || form.invalid">
+        {{ isEditing ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+</div>

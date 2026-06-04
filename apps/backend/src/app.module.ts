@@ -18,6 +18,8 @@ import { ReportesController } from './reportes/reportes.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { CatalogoService } from './catalogo/catalogo.service';
+import { CatalogoController } from './catalogo/catalogo.controller';
 import { UsuarioComercial } from './entities/usuario-comercial.entity';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -71,6 +73,7 @@ console.log('🔌 DB Credentials:', {
     OportunidadController,
     ActividadController,
     ReportesController,
+    CatalogoController,
   ],
   providers: [
     AppService,
@@ -81,6 +84,7 @@ console.log('🔌 DB Credentials:', {
     OportunidadService,
     ActividadService,
     ReportesService,
+    CatalogoService,
   ],
 })
 export class AppModule { }

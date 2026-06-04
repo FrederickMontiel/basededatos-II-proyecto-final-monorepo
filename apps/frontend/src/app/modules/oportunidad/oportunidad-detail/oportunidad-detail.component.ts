@@ -4,12 +4,14 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { OportunidadService } from '../oportunidad.service';
 import { ClienteService } from '../../cliente/cliente.service';
+import { ContactoService } from '../../contacto/contacto.service';
+import { CatalogoService } from '../../../services/catalogo.service';
 
 @Component({
   selector: 'app-oportunidad-detail',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: `<div class="container"><div class="header"><h2>{{ isEditing ? 'Editar' : 'Nueva' }} Oportunidad</h2></div><form [formGroup]="form" (ngSubmit)="onSubmit()" class="form"><input type="text" formControlName="numero_oportunidad" placeholder="Número" class="form-control" /><select formControlName="id_cliente" class="form-control"><option value="">Seleccionar cliente</option><option *ngFor="let c of clientes" [value]="c.id_cliente">{{ c.nombre_comercial }}</option></select><input type="text" formControlName="nombre_oportunidad" placeholder="Nombre" class="form-control" /><input type="number" formControlName="monto_potencial" placeholder="Monto" class="form-control" /><div class="form-actions"><button type="submit" class="btn btn-primary">{{ isEditing ? 'Actualizar' : 'Crear' }}</button><button type="button" class="btn btn-secondary" (click)="cancelar()">Cancelar</button></div></form></div>`,
+  templateUrl: './oportunidad-detail.component.html',
   styleUrls: ['./oportunidad-detail.component.css'],
 })
 export class OportunidadDetailComponent implements OnInit {
@@ -18,37 +20,79 @@ export class OportunidadDetailComponent implements OnInit {
   oportunidadId: number | null = null;
   loading = false;
   clientes: any[] = [];
+  contactos: any[] = [];
+  contactosFiltrados: any[] = [];
+  tiposOportunidad: any[] = [];
+  unidadesTiempo = ['Dias', 'Horas', 'Semanas'];
+  gestores: any[] = [];
+  asistentes: any[] = [];
+  gerentes: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private oportunidadService: OportunidadService,
     private clienteService: ClienteService,
+    private contactoService: ContactoService,
+    private catalogoService: CatalogoService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
     this.form = this.formBuilder.group({
-      numero_oportunidad: ['', Validators.required],
+      numero_oportunidad: [{ value: '', disabled: true }],
       id_cliente: ['', Validators.required],
+      id_contacto: ['', Validators.required],
+      id_tipo_oportunidad: ['', Validators.required],
+      id_gestor_comercial: ['', Validators.required],
+      id_asistente_comercial: ['', Validators.required],
+      id_gerente_comercial: ['', Validators.required],
       nombre_oportunidad: ['', Validators.required],
       monto_potencial: ['', Validators.required],
+      cierre_planificado_valor: ['', Validators.required],
+      cierre_planificado_unidad: ['Dias', Validators.required],
+    });
+
+    this.form.get('id_cliente')?.valueChanges.subscribe((idCliente) => {
+      this.filtrarContactos(idCliente);
     });
   }
 
   ngOnInit() {
-    this.cargarClientes();
+    this.cargarDatos();
     this.route.params.subscribe((params) => {
       if (params['id']) {
         this.oportunidadId = +params['id'];
         this.isEditing = true;
         this.cargarOportunidad(this.oportunidadId!);
+      } else {
+        this.form.patchValue({ numero_oportunidad: `OPT-${Date.now()}` });
       }
     });
   }
 
-  cargarClientes() {
+  cargarDatos() {
     this.clienteService.listar().subscribe({
       next: (data) => (this.clientes = data),
     });
+    this.contactoService.listar().subscribe({
+      next: (data) => (this.contactos = data),
+    });
+    this.catalogoService.getTiposOportunidad().subscribe({
+      next: (data) => (this.tiposOportunidad = data),
+    });
+    this.catalogoService.getGestores().subscribe({
+      next: (data) => (this.gestores = data),
+    });
+    this.catalogoService.getAsistentes().subscribe({
+      next: (data) => (this.asistentes = data),
+    });
+    this.catalogoService.getGerentes().subscribe({
+      next: (data) => (this.gerentes = data),
+    });
+  }
+
+  filtrarContactos(idCliente: number) {
+    this.contactosFiltrados = this.contactos.filter((c) => c.id_cliente === idCliente);
+    this.form.patchValue({ id_contacto: '' });
   }
 
   cargarOportunidad(id: number) {
@@ -56,6 +100,7 @@ export class OportunidadDetailComponent implements OnInit {
     this.oportunidadService.obtenerPorId(id).subscribe({
       next: (data) => {
         this.form.patchValue(data);
+        if (data.id_cliente) this.filtrarContactos(data.id_cliente);
         this.loading = false;
       },
       error: () => (this.loading = false),
@@ -66,10 +111,17 @@ export class OportunidadDetailComponent implements OnInit {
     if (this.form.invalid) return;
     this.loading = true;
     const data = {
-      ...this.form.value,
+      ...this.form.getRawValue(),
       id_cliente: parseInt(this.form.value.id_cliente),
+      id_contacto: parseInt(this.form.value.id_contacto),
+      id_tipo_oportunidad: parseInt(this.form.value.id_tipo_oportunidad),
+      id_gestor_comercial: parseInt(this.form.value.id_gestor_comercial),
+      id_asistente_comercial: parseInt(this.form.value.id_asistente_comercial),
+      id_gerente_comercial: parseInt(this.form.value.id_gerente_comercial),
       monto_potencial: parseFloat(this.form.value.monto_potencial),
+      cierre_planificado_valor: parseInt(this.form.value.cierre_planificado_valor),
     };
+
     if (this.isEditing && this.oportunidadId) {
       this.oportunidadService.actualizar(this.oportunidadId, data).subscribe({
         next: () => this.router.navigate(['/oportunidades']),
